@@ -1,0 +1,18 @@
+{
+  "name": "hello-world-registration",
+  "version": "1.0.0",
+  "description": "Hello World registration with tests",
+  "main": "js/registration.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "testMatch": ["**/tests/**/*.test.js"]
+  }
+}

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Test Runner</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; }
+        .test-section { border: 1px solid #ddd; margin: 20px 0; padding: 15px; border-radius: 5px; }
+        .test-passed { background-color: #d4edda; }
+        .test-failed { background-color: #f8d7da; }
+        button { margin: 5px; padding: 8px 12px; }
+    </style>
+</head>
+<body>
+    <h1>Registration Test Runner</h1>
+    <p>This page tests the registration functionality manually.</p>
+    
+    <div class="test-section">
+        <h3>Test: Valid Registration</h3>
+        <button onclick="testValidRegistration()">Run Test</button>
+        <div id="test1-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test: Invalid Email</h3>
+        <button onclick="testInvalidEmail()">Run Test</button>
+        <div id="test2-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test: Duplicate User</h3>
+        <button onclick="testDuplicateUser()">Run Test</button>
+        <div id="test3-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test: Weak Password</h3>
+        <button onclick="testWeakPassword()">Run Test</button>
+        <div id="test4-result"></div>
+    </div>
+
+    <script src="js/registration.js"></script>
+    <script>
+        // Create a registration instance for testing
+        const testRegistration = new Registration();
+        
+        function showResult(testId, passed, message) {
+            const resultDiv = document.getElementById(testId + '-result');
+            resultDiv.textContent = message;
+            resultDiv.parentElement.className = 'test-section ' + (passed ? 'test-passed' : 'test-failed');
+        }
+        
+        function testValidRegistration() {
+            testRegistration.clearUsers();
+            const result = testRegistration.register({
+                username: 'testuser',
+                email: 'test@example.com',
+                password: 'password123'
+            });
+            showResult('test1', result.success, 
+                result.success ? 'PASSED: Valid registration accepted' : 'FAILED: ' + result.message);
+        }
+        
+        function testInvalidEmail() {
+            testRegistration.clearUsers();
+            const result = testRegistration.register({
+                username: 'testuser',
+                email: 'invalid-email',
+                password: 'password123'
+            });
+            showResult('test2', !result.success && result.message.includes('valid email'), 
+                !result.success ? 'PASSED: Invalid email rejected' : 'FAILED: Invalid email was accepted');
+        }
+        
+        function testDuplicateUser() {
+            testRegistration.clearUsers();
+            testRegistration.register({
+                username: 'testuser',
+                email: 'test1@example.com',
+                password: 'password123'
+            });
+            const result = testRegistration.register({
+                username: 'testuser',
+                email: 'test2@example.com',
+                password: 'password456'
+            });
+            showResult('test3', !result.success && result.message.includes('already exists'), 
+                !result.success ? 'PASSED: Duplicate username rejected' : 'FAILED: Duplicate username was accepted');
+        }
+        
+        function testWeakPassword() {
+            testRegistration.clearUsers();
+            const result = testRegistration.register({
+                username: 'testuser',
+                email: 'test@example.com',
+                password: '123'
+            });
+            showResult('test4', !result.success && result.message.includes('6 characters'), 
+                !result.success ? 'PASSED: Weak password rejected' : 'FAILED: Weak password was accepted');
+        }
+    </script>
+</body>
+</html>
